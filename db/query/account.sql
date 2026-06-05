@@ -19,13 +19,16 @@ FOR UPDATE;
 
 -- name: ListAccounts :many
 SELECT * FROM accounts
-ORDER BY id;
+WHERE owner = $1
+ORDER BY id
+LIMIT $2
+OFFSET $3;
 
 -- name: UpdateAccount :exec
 UPDATE accounts SET balance = $2
 WHERE id = $1;
 
--- name: AddAccountBalance :exec
+-- name: AddAccountBalance :one
 UPDATE accounts 
 SET balance = balance + sqlc.arg(amount)
 WHERE id = sqlc.arg(id)
